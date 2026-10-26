@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Document Management System · EIT Faridabad</title>
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<link rel="stylesheet" href="css/features.css" />
+</head>
+<body class="app-body">
+
+<!-- ================= SIDEBAR ================= -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar__head">
+    <span class="brand__mark" aria-hidden="true">
+      <img src="assets/logo.png" alt="" style="height:30px;width:auto;display:block;border-radius:5px" />
+    </span>
+    <div class="sidebar__title">
+      <strong>EIT DMS</strong>
+      <em>Document Management</em>
+
+    </div>
+    <button class="sidebar__close" id="sidebarClose" aria-label="Close menu">✕</button>
+  </div>
+
+  <nav class="nav" id="nav">
+    <button class="nav__item nav__item--active" data-view="overview">
+      <span class="nav__ico">◈</span> Overview
+    </button>
+
+    <div class="nav__group">
+      <div class="nav__label">
+        <span>Management</span>
+        <button class="nav__add" id="addSectionBtn" title="Create a new section">+</button>
+      </div>
+      <div id="sectionNav"></div>
+    </div>
+
+    <div class="nav__group">
+      <div class="nav__label"><span>Saved views</span></div>
+      <div id="savedNav"></div>
+    </div>
+
+    <div class="nav__group">
+      <div class="nav__label"><span>Tools</span></div>
+      <button class="nav__item" data-view="members" data-admin><span class="nav__ico">✔</span> Members &amp; approvals <span class="pend" id="pendBadge" style="display:none"></span></button>
+      <button class="nav__item" data-view="adv"><span class="nav__ico">⌕</span> Advanced search</button>
+      <button class="nav__item" data-view="rules" data-admin><span class="nav__ico">⚙</span> Workflows &amp; OCR</button>
+      <button class="nav__item" data-view="shares"><span class="nav__ico">⇪</span> Shares &amp; bundles</button>
+      <button class="nav__item" data-view="groups" data-admin><span class="nav__ico">☺</span> Document groups</button>
+      <button class="nav__item" data-view="trash" data-admin><span class="nav__ico">✕</span> Trash</button>
+      <button class="nav__item" data-view="recent">
+        <span class="nav__ico">◷</span> Recent activity
+      </button>
+      <button class="nav__item" data-view="storage">
+        <span class="nav__ico">◔</span> Storage
+      </button>
+    </div>
+  </nav>
+
+  <div class="sidebar__foot">
+    <div class="storage">
+      <div class="storage__top">
+        <span>Storage used</span>
+        <strong id="storagePct">0%</strong>
+      </div>
+      <div class="meter"><div class="meter__fill" id="storageBar" style="width:0%"></div></div>
+      <small id="storageText">— of 2 GB local quota</small>
+    </div>
+  </div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<!-- ================= MAIN ================= -->
+<div class="main">
+  <header class="topbar">
+    <button class="icon-btn topbar__burger" id="burger" aria-label="Menu">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
+
+    <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+
+    <div class="topbar__right">
+      <div class="search">
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+        <input type="search" id="search" class="search__input" placeholder="Search documents, folders, sections…" autocomplete="off" />
+        <div class="search__results" id="searchResults" hidden></div>
+      </div>
+
+      <button class="icon-btn" id="scanBtn" title="Scan / photograph a document (phone)">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5Z"/><circle cx="12" cy="13" r="3.4"/></svg>
+      </button>
+      <button class="icon-btn" id="folderBtn" title="Import a whole folder (bulk)">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h4l2 2.5h7A1.5 1.5 0 0 1 19 10v8a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 3 18Z"/><path d="M12 11v5m0 0-2-2m2 2 2-2"/></svg>
+      </button>
+
+      <button class="icon-btn" id="uploadBtn" title="Upload documents">
+        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+        </svg>
+      </button>
+
+      <button class="icon-btn" id="themeBtn" title="Switch to dark theme" aria-label="Toggle colour theme">
+        <svg class="ico-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8Z"/>
+        </svg>
+        <svg class="ico-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4.2"/>
+          <path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.2 5.2l1.6 1.6M17.2 17.2l1.6 1.6M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6"/>
+        </svg>
+      </button>
+
+      <div class="profile" id="profileBtn">
+        <span class="avatar" id="avatar">—</span>
+        <span class="profile__name" id="userName">User</span>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        <div class="profile__menu" id="profileMenu" hidden>
+          <div class="profile__meta">
+            <strong id="menuName">User</strong>
+            <span id="menuEmail">—</span>
+          </div>
+          <button class="profile__act" id="logoutBtn">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- page body -->
+  <main class="content" id="content">
+    <section class="page" id="page"></section>
+  </main>
+</div>
+
+<!-- hidden file input -->
+<input type="file" id="fileInput" multiple hidden />
+<input type="file" id="scanInput" accept="image/*" capture="environment" multiple hidden />
+<input type="file" id="folderInput" webkitdirectory multiple hidden />
+
+<!-- ================= MODALS ================= -->
+<div class="modal" id="modal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__box" role="dialog" aria-modal="true">
+    <h3 id="modalTitle">Title</h3>
+    <p id="modalText" class="modal__text"></p>
+    <div class="field" id="modalField">
+      <label for="modalInput">Name</label>
+      <input id="modalInput" type="text" />
+    </div>
+    <div class="modal__actions">
+      <button class="btn" data-close>Cancel</button>
+      <button class="btn btn--primary" id="modalOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= DETAILS PANEL ================= -->
+<div class="details" id="details" hidden>
+  <div class="details__backdrop" data-dclose></div>
+  <aside class="details__sheet" role="dialog" aria-modal="true" aria-labelledby="detailsTitle">
+    <header class="details__head">
+      <span class="details__ico" id="detailsIco">▤</span>
+      <div class="details__title">
+        <h3 id="detailsTitle">—</h3>
+        <span id="detailsSub">—</span>
+      </div>
+      <button class="details__close" data-dclose aria-label="Close details">✕</button>
+    </header>
+    <div class="details__body" id="detailsBody"></div>
+  </aside>
+</div>
+
+<!-- toast -->
+<div class="toast-wrap" id="toasts"></div>
+
+<script src="js/storage.js"></script>
+<script src="cloud/js/vendor/supabase.js"></script>
+<script src="cloud/js/config.js"></script>
+<script src="js/cloud.js"></script>
+<script src="js/features.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
