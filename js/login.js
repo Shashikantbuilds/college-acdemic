@@ -38,7 +38,6 @@
     e.preventDefault(); alertBox.hidden = true;
     const em = email.value.trim().toLowerCase();
     if (!em || !pass.value) return show(alertBox, 'Please enter your e-mail and password.');
-    if (!okDomain(em)) return show(alertBox, 'Only ' + CFG.domain + ' addresses are permitted.');
     loginBtn.disabled = true; loginBtn.textContent = 'Signing in…';
     const { error } = await SB.auth.signInWithPassword({ email:em, password:pass.value });
     loginBtn.disabled = false; loginBtn.textContent = 'Log In';
@@ -56,7 +55,7 @@
   $id('forgotLink').addEventListener('click', async e => {
     e.preventDefault(); alertBox.hidden = true;
     const em = email.value.trim().toLowerCase();
-    if (!okDomain(em)) return show(alertBox, 'Type your college e-mail above first, then click "Forgot password?".');
+    if (!em || !em.includes('@')) return show(alertBox, 'Type your e-mail above first, then click "Forgot password?".');
     await SB.auth.resetPasswordForEmail(em, { redirectTo: location.origin + location.pathname });
     show(alertBox, 'If this e-mail is registered, a password-reset link has been sent. Check your inbox (and spam).', 'ok');
   });

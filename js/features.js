@@ -634,8 +634,50 @@ Object.assign(Feat, {
   async clearAll(){ await X.clear('content'); await X.clear('versions'); Object.keys(TXT).forEach(k => delete TXT[k]);
     ['groups','rules','views','shares'].forEach(k => localStorage.removeItem(K[k])); paintSaved(); },
   roles(){
-    if (window.Cloud) Feat.views.members = adminOnly(page => { page.innerHTML = head('Members & approvals', 'People waiting for access, roles and which sections each person can see.') +
-      '<div class="panel"><div class="panel__body"><a class="btn btn--primary" href="cloud/admin.html">Open the approvals page</a></div></div>'; });
+    if (window.Cloud) Feat.views.members = adminOnly(async page => {      /* approvals live inside the dashboard (Supabase) */
+      const C = Cloud.client, ROLES = ['Faculty', 'HOD', 'Exam Cell', 'Office Staff', 'Student Coordinator'];
+      const h = (tag, a = {}, ...kids) => { const e = document.createElement(tag);
+        for (const [k, v] of Object.entries(a)) { if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v === true) e.setAttribute(k, ''); else if (v !== false && v != null) e.setAttribute(k, v); }
+        kids.flat().forEach(c => e.append(c instanceof Node ? c : document.createTextNode(c ?? ''))); return e; };
+      page.innerHTML = head('Members & approvals', 'New sign-ups wait here. Give each person a role and choose which sections they can see.');
+      const box = h('div'); page.append(box);
+      const fail = e => toast((e && e.message) || String(e), 'err');
+      async function draw(){
+        box.replaceChildren(h('p', { class:'muted' }, 'Loading…'));
+        const [pr, sc, ms] = await Promise.all([C.from('profiles').select('*').order('created_at'), C.from('sections').select('*').order('name'), C.from('member_sections').select('*')]);
+        if (pr.error || sc.error || ms.error) return box.replaceChildren(h('div', { class:'alert alert--error' }, (pr.error || sc.error || ms.error).message));
+        const people = pr.data.filter(p => !p.is_admin), pend = people.filter(p => p.status === 'pending'), rest = people.filter(p => p.status !== 'pending');
+        const bd = q1('#pendBadge'); if (bd) { bd.textContent = pend.length; bd.style.display = pend.length ? '' : 'none'; }
+        const card = u => {
+          const mine = new Set(ms.data.filter(m => m.user_id === u.id).map(m => m.section_id));
+          const role = h('input', { type:'text', value:u.role || 'Faculty', maxlength:'60', list:'roleList' });
+          const edit = h('input', { type:'checkbox' }); edit.checked = u.can_edit !== false;
+          const all = h('input', { type:'checkbox' }); all.checked = !!u.all_sections;
+          const boxes = sc.data.map(s => { const c = h('input', { type:'checkbox', value:s.id }); c.checked = u.all_sections || mine.has(s.id); c.disabled = !!u.all_sections; return c; });
+          all.addEventListener('change', () => boxes.forEach(b => { b.disabled = all.checked; if (all.checked) b.checked = true; }));
+          const go = async (label, fn) => { try { const r = await fn(); if (r.error) return fail(r.error); toast(label, 'ok'); await draw(); } catch (e) { fail(e); } };
+          const approve = h('button', { class:'btn btn--sm btn--primary', type:'button', onclick: () => {
+            const chosen = boxes.filter(b => b.checked).map(b => b.value);
+            if (role.value.trim().toLowerCase() === 'admin') return toast('The Admin role cannot be assigned here.', 'err');
+            if (!all.checked && !chosen.length) return toast('Select at least one section (or “All sections”).', 'err');
+            go(u.status === 'approved' ? 'Changes saved' : 'Approved — they can sign in now', () => C.rpc('approve_member', { p_user:u.id, p_role:role.value.trim(), p_can_edit:edit.checked, p_all:all.checked, p_sections:chosen })); } },
+            u.status === 'approved' ? 'Save changes' : 'Approve');
+          const block = h('button', { class:'btn btn--sm btn--danger', type:'button', onclick: () => go('Access blocked', () => C.rpc('block_member', { p_user:u.id })) }, u.status === 'rejected' ? 'Blocked' : (u.status === 'pending' ? 'Reject' : 'Block'));
+          block.disabled = u.status === 'rejected';
+          const label = u.status === 'pending' ? 'Waiting for approval' : u.status === 'approved' ? 'Active' : 'Blocked';
+          return h('div', { class:'mc' },
+            h('div', { class:'mc__top' }, h('div', {}, h('b', {}, u.full_name || '(no name)'), h('small', {}, u.email + (u.created_at ? ' · joined ' + timeAgo(Date.parse(u.created_at)) : ''))), h('span', { class:'st st--' + u.status }, label)),
+            h('div', { class:'mc__grid' }, h('label', {}, 'Role', role), h('label', { class:'check' }, edit, ' Can upload & edit (untick = view only)')),
+            h('div', { class:'mc__secs' }, h('span', {}, 'Sections this member can see (the rest stay hidden)'),
+              h('label', { class:'check' }, all, ' All sections'), sc.data.map((s, i) => h('label', { class:'check' }, boxes[i], ' ' + s.name))),
+            h('div', { class:'mc__acts' }, approve, block));
+        };
+        const panel = (title, list, none) => h('div', { class:'panel' }, h('div', { class:'panel__head' }, h('h2', {}, title), h('span', { class:'tag', style:'background:var(--shell-chip)' }, String(list.length))),
+          h('div', { class:'panel__body' }, list.length ? list.map(card) : h('div', { class:'empty' }, h('h3', {}, none))));
+        box.replaceChildren(h('datalist', { id:'roleList' }, ROLES.map(r => h('option', { value:r }))), panel('Waiting for approval', pend, 'No one is waiting'), panel('Members', rest, 'No members yet'));
+      }
+      draw();
+    });
 
     /* ---- role rules: view-only members and admin-only actions ---- */
     const guard = (name, adminSide) => { const f = window[name]; if (typeof f !== 'function') return;
