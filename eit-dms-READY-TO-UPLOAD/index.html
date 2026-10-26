@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://fmmxghtfsqeyathzsqew.supabase.co; base-uri 'none'; form-action 'self'" />
+<title>Sign In &middot; EIT Faridabad — Document Management System</title>
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/login.css" />
+</head>
+<body class="login-body">
+
+  <!-- ============ LEFT : CAMPUS PHOTO ============ -->
+  <section class="brand-panel">
+    <div class="brand-panel__bg" role="img" aria-label="EIT Faridabad campus"></div>
+    <div class="brand-panel__veil"></div>
+
+    <div class="brand-panel__inner">
+      <header class="brand">
+        <img class="brand__logo" src="assets/logo.png" alt="EIT Faridabad" />
+        <span class="brand__text">
+          <strong>EIT FARIDABAD</strong>
+          <em>Echelon Institute of Technology &amp; Management</em>
+        </span>
+      </header>
+
+      <div class="brand-panel__copy">
+        <span class="eyebrow">Estd. 2007 &middot; Affiliated to GGSIPU, Delhi</span>
+        <h1>Document Management System</h1>
+        <p>A single, secure home for the Dean's office, academic records, NBA reports and every institutional document on campus.</p>
+        <ul class="feature-list">
+          <li><span aria-hidden="true">▣</span> Organised into departments and sections</li>
+          <li><span aria-hidden="true">▣</span> Upload, search and retrieve in seconds</li>
+          <li><span aria-hidden="true">▣</span> Create new folders and sections instantly</li>
+        </ul>
+      </div>
+
+      <div class="brand-panel__stats">
+        <div><strong>2500+</strong><span>Students</span></div>
+        <div><strong>10,000+</strong><span>Placements</span></div>
+        <div><strong>500+</strong><span>Recruiters</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RIGHT : SIGN-IN PANEL ============ -->
+  <section class="form-panel">
+    <div class="form-panel__inner">
+
+      <div class="signin-card">
+        <div class="signin-card__brand">
+          <span class="signin-card__name">
+            <strong>DOCUMENT PORTAL</strong>
+            <span>ECHELON INSTITUTE OF TECHNOLOGY &amp; MANAGEMENT</span>
+          </span>
+        </div>
+        <div class="signin-card__rule"></div>
+
+        <!-- sign in -->
+        <div id="signinPane">
+          <h2 class="signin-card__title">Sign In to Your Account</h2>
+
+          <form id="loginForm" novalidate autocomplete="on">
+            <div class="field">
+              <label for="email">Email</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 7 9 6 9-6"/>
+                  </svg>
+                </span>
+                <input id="email" name="email" type="email" inputmode="email" autocomplete="username"
+                       placeholder="Email" required />
+              </div>
+              <small class="field__hint">Only <strong>@eitfaridabad.co.in</strong> addresses are permitted.</small>
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+                  </svg>
+                </span>
+                <input id="password" name="password" type="password" autocomplete="current-password"
+                       placeholder="Password" required />
+                <button type="button" class="toggle-pass" id="togglePass" aria-label="Show password">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="2.6"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="auth-row">
+              <label class="check"><input type="checkbox" id="remember" checked /><span>Remember my email</span></label>
+              <a href="#" class="link" id="forgotLink">Forgot password?</a>
+            </div>
+
+            <p class="alert" id="loginAlert" role="alert" hidden></p>
+
+            <button class="btn btn--primary btn--block" type="submit" id="loginBtn">Log In</button>
+          </form>
+
+          <p class="signin-card__foot">
+            New here? <a href="#" id="openRegister" class="link">Create account</a> — the admin approves access.
+          </p>
+        </div>
+
+        <!-- create account -->
+        <form id="registerForm" class="register" hidden novalidate>
+          <h2>Create your account</h2>
+          <div class="field">
+            <label for="rName">Full name</label>
+            <input id="rName" type="text" placeholder="e.g. Aarav Sharma" maxlength="120" />
+          </div>
+          <div class="field">
+            <label for="rEmail">College email</label>
+            <input id="rEmail" type="email" placeholder="name@eitfaridabad.co.in" />
+          </div>
+          <div class="field">
+            <label for="rPass">Password</label>
+            <input id="rPass" type="password" placeholder="At least 10 characters" autocomplete="new-password" />
+          </div>
+          <div class="field">
+            <label for="rPass2">Confirm password</label>
+            <input id="rPass2" type="password" placeholder="Type it again" autocomplete="new-password" />
+          </div>
+          <p class="alert" id="regAlert" role="alert" hidden></p>
+          <button class="btn btn--primary btn--block" type="submit" id="regBtn">Create account</button>
+          <p class="signin-card__foot"><a href="#" id="closeRegister" class="link">← Back to sign in</a></p>
+        </form>
+
+        <!-- messages, 2-step code, new-password form are drawn here by js/login.js -->
+        <div id="extraPane" hidden></div>
+      </div>
+
+      <p class="foot-note">© <span id="year">2026</span> EIT Faridabad · Document Management System</p>
+    </div>
+  </section>
+
+<script src="cloud/js/vendor/supabase.js"></script>
+<script src="cloud/js/config.js"></script>
+<script src="cloud/js/supa.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>

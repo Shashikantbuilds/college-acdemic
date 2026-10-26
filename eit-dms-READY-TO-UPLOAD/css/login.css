@@ -1,0 +1,58 @@
+/* login.css — split-screen sign-in page (index.html) */
+.login-body{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); min-height:100vh; height:auto; background:#fff; }
+
+/* ---------- left: campus photo ---------- */
+.brand-panel{ position:relative; overflow:hidden; color:#fff; min-height:100vh; }
+.brand-panel__bg{ position:absolute; inset:0; background:url("../assets/campus.jpg") center/cover no-repeat; transform:scale(1.03); }
+.brand-panel__veil{ position:absolute; inset:0;
+  background:linear-gradient(160deg, rgba(20,40,84,.88) 0%, rgba(29,58,109,.78) 45%, rgba(20,40,84,.92) 100%); }
+.brand-panel__inner{ position:relative; z-index:1; height:100%; min-height:100vh; display:flex; flex-direction:column; justify-content:space-between; gap:32px; padding:40px 48px; }
+.brand{ display:flex; align-items:center; gap:16px; }
+.brand__logo{ height:54px; width:auto; display:block; }
+.brand__text{ display:flex; flex-direction:column; line-height:1.25; border-left:1px solid rgba(255,255,255,.35); padding-left:16px; }
+.brand__text strong{ font-size:15px; letter-spacing:.12em; }
+.brand__text em{ font-style:normal; font-size:12px; color:rgba(255,255,255,.78); }
+.eyebrow{ display:inline-block; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--lime); margin-bottom:14px; }
+.brand-panel__copy h1{ margin:0 0 14px; font-family:var(--serif); font-size:clamp(30px,3.6vw,46px); line-height:1.12; font-weight:700; }
+.brand-panel__copy p{ margin:0 0 22px; max-width:480px; font-size:15.5px; line-height:1.6; color:rgba(255,255,255,.86); }
+.feature-list{ list-style:none; margin:0; padding:0; display:grid; gap:10px; font-size:14.5px; }
+.feature-list span{ color:var(--lime); margin-right:8px; }
+.brand-panel__stats{ display:flex; gap:36px; flex-wrap:wrap; padding-top:22px; border-top:1px solid rgba(255,255,255,.25); }
+.brand-panel__stats strong{ display:block; font-size:24px; font-family:var(--serif); }
+.brand-panel__stats span{ font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:rgba(255,255,255,.75); }
+
+/* ---------- right: sign-in ---------- */
+.form-panel{ display:flex; align-items:center; justify-content:center; padding:32px 24px; background:var(--canvas); }
+.form-panel__inner{ width:100%; max-width:420px; }
+.signin-card{ background:#fff; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:30px 30px 24px; }
+.signin-card__brand{ text-align:left; }
+.signin-card__name strong{ display:block; color:var(--navy); font-size:18px; letter-spacing:.08em; }
+.signin-card__name span{ display:block; margin-top:3px; color:var(--ink-3); font-size:10.5px; letter-spacing:.08em; }
+.signin-card__rule{ height:3px; width:56px; background:var(--lime); border-radius:3px; margin:14px 0 20px; }
+.signin-card__title, .register h2{ margin:0 0 18px; font-size:20px; color:var(--ink); }
+.signin-card__foot{ margin:16px 0 0; font-size:13.5px; color:var(--ink-2); text-align:center; }
+
+.input-wrap{ position:relative; }
+.input-wrap input{ padding-left:40px; padding-right:42px; }
+.input-icon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--ink-3); display:flex; pointer-events:none; }
+.toggle-pass{ position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:transparent; color:var(--ink-3); cursor:pointer; padding:6px; border-radius:6px; display:flex; }
+.toggle-pass:hover{ color:var(--primary); background:var(--line-2); }
+
+.auth-row{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin:2px 0 16px; font-size:13.5px; }
+label.check{ display:inline-flex; align-items:center; gap:8px; cursor:pointer; color:var(--ink-2); }
+label.check input{ width:auto; accent-color:var(--primary); }
+.register[hidden], #extraPane[hidden], #signinPane[hidden]{ display:none; }
+#extraPane p{ line-height:1.55; font-size:14px; }
+#extraPane .btn{ margin-top:6px; }
+
+/* ---------- phones & tablets: photo becomes a short banner ---------- */
+@media (max-width:900px){
+  .login-body{ grid-template-columns:1fr; }
+  .brand-panel, .brand-panel__inner{ min-height:0; }
+  .brand-panel__inner{ padding:24px 22px; gap:18px; }
+  .brand-panel__copy p, .feature-list, .brand-panel__stats{ display:none; }
+  .brand-panel__copy h1{ font-size:26px; margin-bottom:0; }
+  .eyebrow{ margin-bottom:8px; }
+  .brand__logo{ height:40px; }
+  .form-panel{ padding:20px 16px 32px; align-items:flex-start; }
+}
